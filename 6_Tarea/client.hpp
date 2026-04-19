@@ -11,6 +11,9 @@
 #include <iostream>
 #include <thread>
 
+#include <fstream>
+#include <filesystem>
+
 #include "action_manager.hpp"
 #include "json.hpp"
 
@@ -121,44 +124,34 @@ public:
         cout << "File path: ";
         getline(cin, path);
 
-        FILE* fp = fopen(path.c_str(), "rb");
-        if (!fp) {
-            cout << "Cannot open file." << endl;
-            return;
-        }
+        ifstream file(path, ios::binary | ios::ate);
 
-        size_t pos = path.find_last_of("/\\");
-        string filename = (pos == string::npos) ? path : path.substr(pos + 1);
+        size_t size = static_cast<size_t>(file.tellg());
+        file.seekg(0);
+        string content(size, '\0');
+        file.read(content.data(), size);
 
-        fseek(fp, 0, SEEK_END);
-        int file_size = ftell(fp);
-        fseek(fp, 0, SEEK_SET);
+        string file_name = filesystem::path(path).filename().string();
 
-        string file_data(file_size, 0);
-        fread(file_data.data(), 1, file_size, fp);
-        fclose(fp);
-
-        string packet = "F" + lengthString(file_data, 5) + file_data + lengthString(filename, 5) + filename + lengthString(dest, 5) + dest;
+        string packet = "F" + lengthString(content,5) + content + lengthString(file_name,5) + file_name + lengthString(dest,5) + dest;
 
         write(socketFD, packet.data(), packet.size());
 
-        cout << "File sent: " << filename << endl;
+        cout << "File sent: " << file_name << endl;
     }
 
     void fileHandler() {
-        int file_size = readInt(5);
-        string file_data = readString(file_size);
-        int filename_size = readInt(5);
-        string filename = readString(filename_size);
+        int content_size = readInt(5);
+        string content = readString(content_size);
+        int file_name_size = readInt(5);
+        string file_name = readString(file_name_size);
         int source_size = readInt(5);
         string source = readString(source_size);
 
-        string file = "in_file_" + filename;
-        FILE* fp = fopen(file.c_str(), "wb");
-        fwrite(file_data.data(), 1, file_data.size(), fp);
-        fclose(fp);
+        string out_path = "recive_file_" + file_name;
+        ofstream(out_path, ios::binary).write(content.data(),content_size);
 
-        displayWisper(source, "me", "File received: " + file);
+        displayWisper(source, "me", "File received: " + file_name);
     }
 };
 
