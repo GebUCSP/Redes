@@ -102,7 +102,7 @@ public:
         int msg_size = readInt(socketFD,5);
         string msg = readString(socketFD, msg_size);
         int dest_size = readInt(socketFD,7);
-        string dest = readString(socketFD, msg_size);
+        string dest = readString(socketFD, dest_size);
 
         string packet = "u" + lengthString(source,7) + source + lengthString(msg,5) + msg;
 
