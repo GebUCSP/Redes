@@ -186,7 +186,7 @@ public:
 
         string packet = cam->login(nickname);
         for(string dg: cam->wrap(packet))
-            cam->sendDatagram(packet);
+            cam->sendDatagram(dg);
         matchHandler();
     }
 
