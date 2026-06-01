@@ -39,7 +39,7 @@ public:
 
     //ACTIONS
 
-    void loginHandler(int socketFD, sockaddr_in& senderAddr, string payload, map<string, int>& clientsTable){
+    void loginHandler(int socketFD, sockaddr_in& senderAddr, string payload, map<string, sockaddr_in>& clientsTable){
         int nickname_size = stoi(payload.substr(0, 4));
         string nickname = payload.substr(4, nickname_size);
 
@@ -49,7 +49,6 @@ public:
             string packet = "E" + size + msg;
             //write(socketFD, packet.c_str(), packet.size());
             writeDatagram(socketFD, senderAddr, packet);
-            return packet;
         }
 
         clientsTable[nickname] = senderAddr;
@@ -57,7 +56,7 @@ public:
     }
 
 
-    void logoutHandler(int socketFD, sockaddr_in& senderAddr, string payload, map<string,sockaddr_in>& clientsTable) {
+    void logoutHandler(int socketFD, sockaddr_in& senderAddr, map<string,sockaddr_in>& clientsTable) {
         string source = findClient(socketFD, senderAddr, clientsTable);
         if(!source.empty()){
             clientsTable.erase(source);
@@ -198,7 +197,7 @@ public:
 
             int n = recvfrom(socketFD, buffer.data(), buffer.size(),0,(sockaddr*)&senderAddr, &len);
             
-            if(m <= 0)
+            if(n <= 0)
                 continue;
 
             Datagram dg = sam.parse(buffer);

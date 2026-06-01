@@ -29,7 +29,7 @@ public:
         for(const char c: payload)
             sum += c - '0';
         
-        return (sum % 7)
+        return (sum % 7);
     }
 
     string lengthString(string s, int size){
@@ -130,4 +130,4 @@ public:
 
         return "";
     }   
-}
+};
