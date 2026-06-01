@@ -234,8 +234,8 @@ public:
             break;
         }
 
-        for(string datagram: cam->wrap(packet))
-            cam->sendDatagram(datagram);
+        for(string dg: cam->wrap(packet))
+            cam->sendDatagram(dg);
     }
 
     void matchHandler(){

@@ -27,7 +27,7 @@ public:
     int checksum(string payload){
         int sum = 0;
         for(const char c: payload)
-            sum += c - '0';
+            sum += (unsigned char)c;
         
         return (sum % 7);
     }
@@ -97,7 +97,7 @@ public:
     Datagram parse(const string& datagram){
         int own_checksum = checksum(datagram.substr(1, DATAGRAM_SIZE - 1));
 
-        int datagram_checksum = datagram[0];
+        int datagram_checksum = datagram[0] - '0';
 
         if(datagram_checksum != own_checksum){
             return Datagram{false, "", 0, ""};
