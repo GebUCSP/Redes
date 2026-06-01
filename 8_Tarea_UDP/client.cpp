@@ -240,14 +240,14 @@ public:
 
     void matchHandler(){
         string datagram = cam->readDatagram();
-        Datagram dg = parse(datagram);
+        Datagram dg = cam->parse(datagram);
 
         if(!dg.checksum_valid){
             cout << "Lost data" << endl;
             return;
         }
 
-        string packet = reassemble(dg);
+        string packet = cam->reassemble(dg);
         if (packet.empty())
             return;
 
