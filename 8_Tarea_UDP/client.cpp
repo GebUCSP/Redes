@@ -139,9 +139,9 @@ public:
 
         string packet = "F" + lengthString(content,5) + content + lengthString(file_name,5) + file_name + lengthString(dest,5) + dest;
 
+        cout << "File sent: " << file_name << endl;
         //write(socketFD, packet.data(), packet.size());
         return packet;
-        cout << "File sent: " << file_name << endl;
     }
 
     void fileHandler(string payload) {
@@ -234,7 +234,7 @@ public:
             break;
         }
 
-        for(string datagram: wrap(packet))
+        for(string datagram: cam->wrap(packet))
             cam->sendDatagram(datagram);
     }
 
