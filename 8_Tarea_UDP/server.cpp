@@ -110,16 +110,16 @@ public:
     }
 
     void fileHandler(int socketFD, sockaddr_in& senderAddr, string payload, map<string,sockaddr_in>& clientsTable){
-        int file_size = stoi(payload.substr(0, 5));
-        string file_data = payload.substr(5, file_size);
-        int filename_size = stoi(payload.substr(5 + file_size, 5));
-        string filename = payload.substr(5 + file_size + 5, filename_size);
-        int dest_size = stoi(payload.substr(5 + file_size + 5 + filename_size, 5));
-        string dest = payload.substr(5 + file_size + 5 + filename_size + 5, dest_size);
+        int file_size = stoi(payload.substr(0, 22));
+        string file_data = payload.substr(22, file_size);
+        int filename_size = stoi(payload.substr(22 + file_size, 5));
+        string filename = payload.substr(22 + file_size + 5, filename_size);
+        int dest_size = stoi(payload.substr(22 + file_size + 5 + filename_size, 5));
+        string dest = payload.substr(22 + file_size + 5 + filename_size + 5, dest_size);
 
         string source = findClient(socketFD, senderAddr, clientsTable);
 
-        string packet = "f" + lengthString(file_data, 5) + file_data + lengthString(filename, 5) + filename + lengthString(source, 5) + source;
+        string packet = "f" + lengthString(file_data, 22) + file_data + lengthString(filename, 5) + filename + lengthString(source, 5) + source;
 
         if(clientsTable.count(dest)){
             writeDatagram(socketFD, clientsTable[dest],packet);

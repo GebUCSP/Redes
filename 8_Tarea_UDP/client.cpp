@@ -137,7 +137,7 @@ public:
 
         string file_name = filesystem::path(path).filename().string();
 
-        string packet = "F" + lengthString(content,5) + content + lengthString(file_name,5) + file_name + lengthString(dest,5) + dest;
+        string packet = "F" + lengthString(content,22) + content + lengthString(file_name,5) + file_name + lengthString(dest,5) + dest;
 
         cout << "File sent: " << file_name << endl;
         //write(socketFD, packet.data(), packet.size());
@@ -145,12 +145,12 @@ public:
     }
 
     void fileHandler(string payload) {
-        int content_size = stoi(payload.substr(0, 5));
-        string content = payload.substr(5, content_size);
-        int file_name_size = stoi(payload.substr(5 + content_size, 5));
-        string file_name = payload.substr(5 + content_size + 5, file_name_size);
-        int source_size = stoi(payload.substr(5 + content_size + 5 + file_name_size, 5));
-        string source = payload.substr(5 + content_size + 5 + file_name_size + 5, source_size);
+        int content_size = stoi(payload.substr(0, 22));
+        string content = payload.substr(22, content_size);
+        int file_name_size = stoi(payload.substr(22 + content_size, 5));
+        string file_name = payload.substr(22 + content_size + 5, file_name_size);
+        int source_size = stoi(payload.substr(22 + content_size + 5 + file_name_size, 5));
+        string source = payload.substr(22 + content_size + 5 + file_name_size + 5, source_size);
 
         string out_path = "recive_file_" + file_name;
         ofstream(out_path, ios::binary).write(content.data(),content_size);
